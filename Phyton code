@@ -1,0 +1,70 @@
+# List to store book records
+books = []
+
+# Dictionary to store borrowed books
+borrowed_books = {}
+
+def add_book(title, author, isbn):
+    """Function to add a book to the library"""
+    for book in books:
+        if book['isbn'] == isbn:
+            print("Error: Book with this ISBN already exists.")
+            return
+    book = {'title': title, 'author': author, 'isbn': isbn, 'borrowed': False}
+    books.append(book)
+    print("Book added successfully.")
+
+def search_book(criteria, keyword):
+    """Function to search for a book"""
+    found_books = []
+    if criteria == "title":
+        found_books = [book for book in books if keyword.lower() in book['title'].lower()]
+    elif criteria == "author":
+        found_books = [book for book in books if keyword.lower() in book['author'].lower()]
+    elif criteria == "isbn":
+        found_books = [book for book in books if keyword == book['isbn']]
+    else:
+        print("Invalid search criteria. Please use 'title', 'author', or 'isbn'.")
+        return
+    
+    if found_books:
+        for book in found_books:
+            print(f"Book found: {book['title']} by {book['author']}, ISBN: {book['isbn']}, Borrowed: {book.get('borrowed', False)}")
+    else:
+        print("No book found matching the criteria.")
+
+def borrow_book(isbn, borrower):
+    """Function to borrow a book"""
+    for book in books:
+        if book['isbn'] == isbn:
+            if not book['borrowed']:
+                book['borrowed'] = True
+                book['borrower'] = borrower
+                borrowed_books[isbn] = borrower
+                print("Book borrowed successfully.")
+                return
+            else:
+                print("Book already borrowed.")
+                return
+    print("Book not found.")
+
+def return_book(isbn):
+    """Function to return a book"""
+    for book in books:
+        if book['isbn'] == isbn:
+            if book['borrowed']:
+                book['borrowed'] = False
+                del book['borrower']
+                del borrowed_books[isbn]
+                print("Book returned successfully.")
+                return
+            else:
+                print("Book was not borrowed.")
+                return
+    print("Book not found.")
+
+# Example usage
+add_book("The Great Gatsby", "F. Scott Fitzgerald", "1234567890")
+search_book("title", "The Great Gatsby")
+borrow_book("1234567890", "Michael Brook")
+return_book("1234567890")
